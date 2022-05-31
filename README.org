@@ -1,0 +1,16 @@
+* omx-suite
+(pronounced omics) A command line interface to omx-* snakemake workflows, so
+they can be setup and run with a single command. ('cause I'm lazy)
+
+** Usage
+
+#+begin_src sh
+omx <workflow> <args> -- <snakemake args>
+# create workflow dir, setup Snakefile, config, input dirs, run/rerun workflow
+
+# somewhat equivalent to
+git clone <omx-workflow>
+cd <omx-workflow>
+cp <input-data> .
+snakemake <snakemake args> <target>
+#+end_src

@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+# Created: 30 May 2022
+# Author: Thomas Hackl, thackl@lim4.de
+use warnings;
+use strict;
+use Getopt::Long qw(:config no_ignore_case bundling);
+use FindBin qw($RealBin $Script);
+
+my $VERSION = "0.1.0";
+    
+print STDERR "$Script-v$VERSION - a workflow suite for omics analyses\n\n";
+
+#print STDERR 'Please cite:';
+
+my %cmds = (
+    "assemble-ont" => "assemble and polish nanopore reads",
+    "bin" => "...",
+    "classify" => "...",
+);
+
+if (@ARGV < 1 || cmd_uniq_match($ARGV[0])){
+    print "Usage: $Script <cmd> [options]\n\n";
+
+    for my $cmd (sort keys %cmds){
+        printf "  %-16s %s\n", $cmd, $cmds{$cmd}
+    }
+    print "\nSee `$Script cmd -h` for more options\n";
+    
+    exit 0;
+}
+
+system("$RealBin/$Script-@ARGV");
+
+sub cmd_uniq_match{
+    my ($cmd) = @_;
+    my @matches = grep{$_ =~ /^$cmd/}(keys %cmds);
+    if(@matches == 1){
+        $ARGV[0] = $matches[0];
+        return 0
+    }else{
+        print "unknown/ambigious command $cmd\n\n";
+        return 1;
+    }
+}

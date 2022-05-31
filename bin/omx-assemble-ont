@@ -1,0 +1,52 @@
+#!/usr/bin/env perl
+# Created: 30 May 2022
+# Author: Thomas Hackl, thackl@lim4.de
+use warnings;
+use strict;
+use Getopt::Long  qw(:config no_ignore_case bundling);
+use FindBin qw($RealBin $Script);
+use Data::Dumper;
+use Cwd qw(getcwd abs_path);
+use List::MoreUtils 'first_index'; 
+
+my @snkparams = argv_snkparams();
+GetOptions (
+    "help|h!" => \(my $help),
+    "debug|D!" => \(my $debug),
+) or die("Error in command line arguments\n");
+
+if ($help || @ARGV < 2){
+    print "Usage: omx assemble-ont prefix reads\n";
+    printf " %-19s  %s\n", "-h/--help", "show this help";
+    printf " %-19s  %s\n", "-D/--debug", "show debug messages";
+    exit 0;
+}
+
+
+my $prefix = shift @ARGV;
+my @reads = map{abs_path($_)}@ARGV;
+
+if (-e $prefix){
+    print "Rerunning $Script workflow for $prefix\n";
+    chdir "$prefix";
+}else{
+    print "Setting up $Script workflow for $prefix\n";
+    mkdir "$prefix";
+    system("cp -r $RealBin/../workflows/$Script/* $prefix/.");
+    mkdir "$prefix/reads-np";
+    chdir "$prefix/reads-np";
+    qx(ln -s $_) for @reads;
+    print "Running $Script workflow for $prefix\n";
+    chdir "..";
+}
+
+print "PWD: ", getcwd, "\n";
+system("snakemake @snkparams flye/$prefix.fna");
+
+sub argv_snkparams{
+    my $i = first_index { $_ eq "--" } @ARGV;
+    return "" if $i < 0;
+    @snkparams = @ARGV[($i+1)..$#ARGV];
+    @ARGV = @ARGV[0..($i-1)];
+    return @snkparams;
+}
