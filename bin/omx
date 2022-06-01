@@ -26,12 +26,9 @@ if (@ARGV < 1 || cmd_uniq_match($ARGV[0])){
     }
     print "\nSee `$Script cmd -h` for more options\n";
 
-    conda_omx();
-    
     exit 0;
 }
 
-conda_omx();
 system("$RealBin/$Script-@ARGV");
 
 sub cmd_uniq_match{
@@ -43,29 +40,5 @@ sub cmd_uniq_match{
     }else{
         print "unknown/ambigious command $cmd\n\n";
         return 1;
-    }
-}
-
-sub conda_omx{
-    conda_omx_installed() && conda_omx_active();
-}
-
-sub conda_omx_active{
-    my $conda_env = $ENV{CONDA_DEFAULT_ENV};
-    if($conda_env ne "omx"){
-        print "
-Note: conda env 'omx' not activated.
-- run `conda activate omx` to use the same pre-installed conda env for all workflows
-- add `--use-conda` as snakemake parameter to install and use workflow/rule-specific conda envs for every call.\n\n";
-    }
-}
-
-sub conda_omx_installed{
-    my $conda_envs = qx(conda env list);
-    if($conda_envs =~ /\nomx\s/){
-        return 1;
-    }else{
-        print "Conda env 'omx' not set up. Run `omx conda` to create env\n";
-        return 0;
     }
 }
