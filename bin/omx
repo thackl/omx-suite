@@ -6,7 +6,7 @@ use strict;
 use Getopt::Long qw(:config no_ignore_case bundling);
 use FindBin qw($RealBin $Script);
 
-my $VERSION = "0.1.0";
+my $VERSION = "0.2.0";
     
 print STDERR "$Script-v$VERSION - a workflow suite for omics analyses\n\n";
 
