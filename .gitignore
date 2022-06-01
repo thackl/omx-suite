@@ -1,3 +1,5 @@
 workflows
 dev
+envs/*
+!envs/will-be-populated-by-installed-envs
 omx-workpack.org
