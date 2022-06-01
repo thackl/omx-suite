@@ -14,3 +14,15 @@ cd <omx-workflow>
 cp <input-data> .
 snakemake <snakemake args> <target>
 #+end_src
+
+omx by default installs al conda envs in same location (setting --conda-prefix /path/to/omx/envs), so when workflows are
+executed in different dirs, envs aren't always reinstalled (with pros and
+cons). (TODO disable).
+
+
+** Install & Setup
+#+begin_src sh
+git clone ...
+mamba create -n omx;          
+mamba env update -n omx --file environment.yaml
+#+end_src
