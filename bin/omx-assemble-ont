@@ -9,6 +9,8 @@ use Data::Dumper;
 use Cwd qw(getcwd abs_path);
 use List::MoreUtils 'first_index'; 
 
+# this should lookup/install conda envs for all workflow runs in omx dir instead of workflow/.snakemake
+my @conda = "--use-conda --conda-prefix $RealBin/../envs";
 my @snkparams = argv_snkparams();
 GetOptions (
     "help|h!" => \(my $help),
@@ -41,7 +43,9 @@ if (-e $prefix){
 }
 
 print "PWD: ", getcwd, "\n";
-system("snakemake @snkparams flye/$prefix.fna");
+my $smk = "snakemake @conda @snkparams";
+print "$smk\n";
+system($smk);
 
 sub argv_snkparams{
     my $i = first_index { $_ eq "--" } @ARGV;
